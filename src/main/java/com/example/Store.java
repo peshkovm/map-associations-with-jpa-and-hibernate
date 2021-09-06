@@ -1,11 +1,17 @@
 package com.example;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
@@ -15,26 +21,29 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "order_item_table")
+@Table(name = "store_table")
 @Setter
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
-public class OrderItem {
+public class Store {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_item_sequence")
-  @SequenceGenerator(name = "order_item_sequence")
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "store_sequence")
+  @SequenceGenerator(name = "store_sequence")
   private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "order_id")
-  Order order;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "store_product_table",
+      joinColumns = @JoinColumn(name = "store_id"),
+      inverseJoinColumns = @JoinColumn(name = "product_id"))
+  Set<Product> products = new HashSet<>();
 
   @EqualsAndHashCode.Include @ToString.Include private int value;
 
-  public OrderItem(int value) {
+  public Store(int value) {
     this.value = value;
   }
 }

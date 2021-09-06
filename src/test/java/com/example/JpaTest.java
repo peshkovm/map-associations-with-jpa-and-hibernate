@@ -9,31 +9,31 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class JpaTest {
 
-  @Autowired private OrderRepository orderRepo;
-  @Autowired private OrderItemRepository orderItemRepo;
+  @Autowired
+  private StoreRepository storeRepo;
+  @Autowired
+  private ProductRepository productRepo;
 
   @Test
   @DisplayName("Select all order_items from item")
   void selectAllOrderItemsFromItem() {
-    final var order = new Order(1);
-    final var orderItem1 = new OrderItem(1);
-    final var orderItem2 = new OrderItem(2);
+    final var store = new Store(1);
+    final var product1 = new Product(1);
+    final var product2 = new Product(2);
 
-    orderItem1.setOrder(order);
-    orderItem2.setOrder(order);
-    order.getItems().add(orderItem1);
-    order.getItems().add(orderItem2);
+    store.getProducts().add(product1);
+    store.getProducts().add(product2);
 
-    orderRepo.save(order);
-    orderItemRepo.save(orderItem1);
-    orderItemRepo.save(orderItem2);
+    productRepo.save(product1);
+    productRepo.save(product2);
+    storeRepo.save(store);
 
-    final var orderId = 1L;
+    final var storeId = 1L;
 
-    final var savedOrderItems = orderRepo.findById(orderId).orElseThrow().getItems();
+    final var savedProducts = storeRepo.findById(storeId).orElseThrow().getProducts();
 
-    Assertions.assertEquals(savedOrderItems.size(), 2);
-    Assertions.assertEquals(savedOrderItems.get(0), orderItem1);
-    Assertions.assertEquals(savedOrderItems.get(1), orderItem2);
+    Assertions.assertEquals(savedProducts.size(), 2);
+    Assertions.assertEquals(savedProducts.stream().toList().get(0), product1);
+    Assertions.assertEquals(savedProducts.stream().toList().get(1), product2);
   }
 }
