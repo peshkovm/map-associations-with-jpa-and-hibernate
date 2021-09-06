@@ -19,19 +19,21 @@ class JpaTest {
     final var orderItem1 = new OrderItem(1);
     final var orderItem2 = new OrderItem(2);
 
+    orderItem1.setOrder(order);
+    orderItem2.setOrder(order);
     order.getItems().add(orderItem1);
     order.getItems().add(orderItem2);
 
+    orderRepo.save(order);
     orderItemRepo.save(orderItem1);
     orderItemRepo.save(orderItem2);
-    orderRepo.save(order);
 
     final var orderId = 1L;
 
-    final var savedOrderItems1 = orderRepo.findById(orderId).orElseThrow().getItems();
+    final var savedOrderItems = orderRepo.findById(orderId).orElseThrow().getItems();
 
-    Assertions.assertEquals(savedOrderItems1.size(), 2);
-    Assertions.assertEquals(savedOrderItems1.get(0), orderItem1);
-    Assertions.assertEquals(savedOrderItems1.get(1), orderItem2);
+    Assertions.assertEquals(savedOrderItems.size(), 2);
+    Assertions.assertEquals(savedOrderItems.get(0), orderItem1);
+    Assertions.assertEquals(savedOrderItems.get(1), orderItem2);
   }
 }
