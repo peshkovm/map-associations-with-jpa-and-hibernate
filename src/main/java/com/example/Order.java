@@ -1,9 +1,15 @@
 package com.example;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,8 +27,13 @@ import lombok.ToString;
 public class Order {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_sequence")
+  @SequenceGenerator(name = "order_sequence")
   private Long id;
+
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinColumn(name = "order_id")
+  List<OrderItem> items = new ArrayList<>();
 
   @EqualsAndHashCode.Include @ToString.Include private int value;
 

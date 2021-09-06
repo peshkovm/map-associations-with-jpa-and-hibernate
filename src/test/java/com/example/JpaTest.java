@@ -1,6 +1,5 @@
 package com.example;
 
-import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,28 +19,19 @@ class JpaTest {
     final var orderItem1 = new OrderItem(1);
     final var orderItem2 = new OrderItem(2);
 
-    orderItem1.setOrder(order);
-    orderItem2.setOrder(order);
+    order.getItems().add(orderItem1);
+    order.getItems().add(orderItem2);
 
-    orderRepo.save(order);
     orderItemRepo.save(orderItem1);
     orderItemRepo.save(orderItem2);
+    orderRepo.save(order);
 
     final var orderId = 1L;
 
-    final var savedOrderItems1 =
-        StreamSupport.stream(orderItemRepo.findAll().spliterator(), false)
-            .filter(savedOrderItem -> savedOrderItem.getOrder().getId() == orderId)
-            .toList();
+    final var savedOrderItems1 = orderRepo.findById(orderId).orElseThrow().getItems();
 
     Assertions.assertEquals(savedOrderItems1.size(), 2);
     Assertions.assertEquals(savedOrderItems1.get(0), orderItem1);
     Assertions.assertEquals(savedOrderItems1.get(1), orderItem2);
-
-    final var savedOrderItems2 = orderItemRepo.findOrderItemsByOrder(order);
-
-    Assertions.assertEquals(savedOrderItems2.size(), 2);
-    Assertions.assertEquals(savedOrderItems2.get(0), orderItem1);
-    Assertions.assertEquals(savedOrderItems2.get(1), orderItem2);
   }
 }
