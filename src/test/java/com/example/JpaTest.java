@@ -1,5 +1,6 @@
 package com.example;
 
+import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,31 +10,32 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class JpaTest {
 
-  @Autowired private StoreRepository storeRepo;
-  @Autowired private ProductRepository productRepo;
+  @Autowired private CustomerRepository customerRepo;
+  @Autowired private ShippingAddressRepository shippingAddressRepo;
 
   @Test
   @DisplayName("Select all order_items from item")
   void selectAllOrderItemsFromItem() {
-    final var store = new Store(1);
-    final var product1 = new Product(1);
-    final var product2 = new Product(2);
+    final var customer = new Customer(1);
+    final var shippingAddress = new ShippingAddress(1);
 
-    store.getProducts().add(product1);
-    store.getProducts().add(product2);
-    product1.getStores().add(store);
-    product2.getStores().add(store);
+    shippingAddress.setCustomer(customer);
 
-    productRepo.save(product1);
-    productRepo.save(product2);
-    storeRepo.save(store);
+    customerRepo.save(customer);
+    shippingAddressRepo.save(shippingAddress);
 
-    final var storeId = 1L;
+    final var customerId = 1L;
 
-    final var savedProducts = storeRepo.findById(storeId).orElseThrow().getProducts();
+    final var savedShippingAddress1 =
+        StreamSupport.stream(shippingAddressRepo.findAll().spliterator(), false)
+            .filter(address -> address.getCustomer().getId() == customerId)
+            .findFirst()
+            .orElseThrow();
 
-    Assertions.assertEquals(savedProducts.size(), 2);
-    Assertions.assertEquals(savedProducts.stream().toList().get(0), product1);
-    Assertions.assertEquals(savedProducts.stream().toList().get(1), product2);
+    Assertions.assertEquals(savedShippingAddress1, shippingAddress);
+
+    final var savedShippingAddress2 = shippingAddressRepo.findShippingAddressByCustomer(customer);
+
+    Assertions.assertEquals(savedShippingAddress2, shippingAddress);
   }
 }
