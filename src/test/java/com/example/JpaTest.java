@@ -9,10 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class JpaTest {
 
-  @Autowired
-  private StoreRepository storeRepo;
-  @Autowired
-  private ProductRepository productRepo;
+  @Autowired private StoreRepository storeRepo;
+  @Autowired private ProductRepository productRepo;
 
   @Test
   @DisplayName("Select all order_items from item")
@@ -23,6 +21,8 @@ class JpaTest {
 
     store.getProducts().add(product1);
     store.getProducts().add(product2);
+    product1.getStores().add(store);
+    product2.getStores().add(store);
 
     productRepo.save(product1);
     productRepo.save(product2);
