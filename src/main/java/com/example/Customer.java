@@ -1,11 +1,11 @@
 package com.example;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
@@ -27,6 +27,10 @@ public class Customer {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_sequence")
   @SequenceGenerator(name = "customer_sequence")
   private Long id;
+
+  @OneToOne(mappedBy = "customer")
+  @PrimaryKeyJoinColumn
+  private ShippingAddress shippingAddress;
 
   @EqualsAndHashCode.Include @ToString.Include private int value;
 

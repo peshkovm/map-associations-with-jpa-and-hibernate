@@ -24,7 +24,8 @@ class JpaTest {
 
     final var customerId = 1L;
 
-    final var savedShippingAddress = shippingAddressRepo.findById(customerId).orElseThrow();
+    final var savedShippingAddress =
+        customerRepo.findById(customerId).orElseThrow().getShippingAddress();
 
     Assertions.assertEquals(savedShippingAddress, shippingAddress);
   }
