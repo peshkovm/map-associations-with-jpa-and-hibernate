@@ -1,6 +1,5 @@
 package com.example;
 
-import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,23 +18,16 @@ class JpaTest {
     final var customer = new Customer(1);
     final var shippingAddress = new ShippingAddress(1);
 
+    customer.setShippingAddress(shippingAddress);
     shippingAddress.setCustomer(customer);
 
-    customerRepo.save(customer);
     shippingAddressRepo.save(shippingAddress);
 
     final var customerId = 1L;
 
-    final var savedShippingAddress1 =
-        StreamSupport.stream(shippingAddressRepo.findAll().spliterator(), false)
-            .filter(address -> address.getCustomer().getId() == customerId)
-            .findFirst()
-            .orElseThrow();
+    final var savedShippingAddress =
+        customerRepo.findById(customerId).orElseThrow().getShippingAddress();
 
-    Assertions.assertEquals(savedShippingAddress1, shippingAddress);
-
-    final var savedShippingAddress2 = shippingAddressRepo.findShippingAddressByCustomer(customer);
-
-    Assertions.assertEquals(savedShippingAddress2, shippingAddress);
+    Assertions.assertEquals(savedShippingAddress, shippingAddress);
   }
 }
