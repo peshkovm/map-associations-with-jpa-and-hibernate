@@ -28,9 +28,6 @@ public class Customer {
   @SequenceGenerator(name = "customer_sequence")
   private Long id;
 
-  @OneToOne(mappedBy = "customer")
-  ShippingAddress shippingAddress;
-
   @EqualsAndHashCode.Include @ToString.Include private int value;
 
   public Customer(int value) {

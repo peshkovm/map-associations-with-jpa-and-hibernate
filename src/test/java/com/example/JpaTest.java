@@ -18,15 +18,13 @@ class JpaTest {
     final var customer = new Customer(1);
     final var shippingAddress = new ShippingAddress(1);
 
-    customer.setShippingAddress(shippingAddress);
     shippingAddress.setCustomer(customer);
 
     shippingAddressRepo.save(shippingAddress);
 
     final var customerId = 1L;
 
-    final var savedShippingAddress =
-        customerRepo.findById(customerId).orElseThrow().getShippingAddress();
+    final var savedShippingAddress = shippingAddressRepo.findById(customerId).orElseThrow();
 
     Assertions.assertEquals(savedShippingAddress, shippingAddress);
   }
